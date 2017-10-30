@@ -32,18 +32,11 @@ public class Utils {
 
     public static File getStoreFile(String fileName) throws URISyntaxException {
         String dir = "storeFiles";
-        String workiingDir = System.getProperty("user.dir");
-
-        return new File(workiingDir + separator + dir + separator + fileName);
-        //TODO meu pc tem espaco no nome da pasta do usuário por isso não funciona
-//        ClassLoader classLoader = Utils.class.getClassLoader();
-//        URL resource = classLoader.getResource(dir + "/" + fileName);
-//        if (resource == null){
-//            URL url = classLoader.getResource(dir);
-//            assert url != null;
-//            File parentDirectory = new File(new URI(url.toString()));
-//            return new File(parentDirectory, fileName);
-//        }
-//        return new File(resource.getFile());
+        ClassLoader classLoader = Utils.class.getClassLoader();
+        URL resource = classLoader.getResource(dir + "/" + fileName);
+        assert resource != null;
+        String file = resource.getFile();
+        file = file.replaceAll("%20", " ");
+        return new File(file);
     }
 }

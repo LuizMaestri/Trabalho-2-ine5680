@@ -1,9 +1,7 @@
 package socket;
 
 import cript.DH;
-import cript.RSA;
 import exception.NoImplementedException;
-import utils.Utils;
 
 import javax.crypto.BadPaddingException;
 import javax.crypto.IllegalBlockSizeException;
@@ -11,16 +9,15 @@ import javax.crypto.NoSuchPaddingException;
 import java.io.*;
 import java.net.ServerSocket;
 import java.net.Socket;
-import java.security.InvalidAlgorithmParameterException;
-import java.security.InvalidKeyException;
-import java.security.NoSuchAlgorithmException;
-import java.security.NoSuchProviderException;
+import java.net.URISyntaxException;
+import java.security.*;
+import java.security.cert.CertificateException;
 import java.util.Scanner;
 
 public class Server extends ISocket {
 
     public Server() throws NoSuchProviderException, NoSuchAlgorithmException {
-        rsa = new RSA();
+        super("Server.jks");
     }
 
     public void run(String host, int port) throws NoImplementedException {
@@ -34,7 +31,7 @@ public class Server extends ISocket {
             System.out.println("Porta 12345 aberta!");
             Socket client = server.accept();
             System.out.println("Nova conexão com o cliente " + client.getInetAddress().getHostAddress());
-            keyExchnge(client, "CLIENT", "");
+            keyExchange(client);
             reciveSecretKey(client);
             Scanner scanner = new Scanner(client.getInputStream());
             while (scanner.hasNextLine()) {
@@ -45,14 +42,13 @@ public class Server extends ISocket {
             scanner.close();
             server.close();
         } catch (IOException e) {
-            e.printStackTrace();
+            System.out.println("Disconnected from server");
         } catch (NoSuchAlgorithmException | InvalidKeyException | NoSuchPaddingException | BadPaddingException | NoSuchProviderException | IllegalBlockSizeException e) {
-//            System.out.println("Not possible decrypt message");
-            e.printStackTrace();
-        } catch (ClassNotFoundException e) {
-            e.printStackTrace();
-        } catch (InvalidAlgorithmParameterException e) {
-            e.printStackTrace();
+            System.out.println("Not possible decrypt message");
+        } catch (ClassNotFoundException | InvalidAlgorithmParameterException e) {
+            System.out.println("Error on Key Exchange");
+        } catch (CertificateException | UnrecoverableKeyException | KeyStoreException | URISyntaxException e) {
+            System.out.println("Error on client Secret key");
         }
     }
 

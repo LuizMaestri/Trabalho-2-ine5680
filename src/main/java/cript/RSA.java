@@ -1,12 +1,17 @@
 package cript;
 
 import org.bouncycastle.jcajce.provider.BouncyCastleFipsProvider;
+import store.KeyStrAdap;
 import utils.Utils;
 
 import javax.crypto.*;
+import java.io.IOException;
+import java.net.URISyntaxException;
 import java.security.*;
+import java.security.cert.CertificateException;
+import java.security.spec.InvalidKeySpecException;
 
-import static cript.Config.*;
+import static utils.Config.*;
 
 public class RSA {
 
@@ -18,12 +23,25 @@ public class RSA {
         pair = generator.generateKeyPair();
     }
 
-    public PublicKey getPublicKey(){
-        return pair.getPublic();
+    public PublicKey getPublicKey(String fileName)
+            throws CertificateException, UnrecoverableKeyException, NoSuchAlgorithmException, KeyStoreException,
+            URISyntaxException, NoSuchProviderException, IOException, InvalidKeySpecException {
+        PublicKey key = KeyStrAdap.getPublicKey(fileName);
+        if (key == null){
+            key = pair.getPublic();
+        }
+        return key;
     }
 
-    public PrivateKey getPrivateKey(){
-        return pair.getPrivate();
+    public PrivateKey getPrivateKey(String fileName)
+            throws CertificateException, NoSuchAlgorithmException, KeyStoreException, URISyntaxException,
+            NoSuchProviderException, IOException, UnrecoverableKeyException {
+        PrivateKey key = KeyStrAdap.getPrivateKey(fileName);
+        if (key == null){
+            key = pair.getPrivate();
+            KeyStrAdap.storeKey(fileName, "_private", key);
+        }
+        return key;
     }
 
     public String encrypt(String text, Key key)
