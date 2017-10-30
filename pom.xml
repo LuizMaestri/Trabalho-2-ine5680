@@ -17,6 +17,41 @@
                     <target>1.8</target>
                 </configuration>
             </plugin>
+
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-dependency-plugin</artifactId>
+                <version>2.5.1</version>
+                <executions>
+                    <execution>
+                        <id>copy-dependencies</id>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>copy-dependencies</goal>
+                        </goals>
+                        <configuration>
+                            <!-- exclude junit, we need runtime dependency only -->
+                            <includeScope>compile</includeScope>
+                            <outputDirectory>${project.build.directory}/dependency-jars/</outputDirectory>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-jar-plugin</artifactId>
+                <configuration>
+                    <archive>
+                        <manifest>
+                            <addClasspath>true</addClasspath>
+                            <classpathPrefix>${project.build.directory}/dependency-jars/</classpathPrefix>
+                            <mainClass>
+                                Main
+                            </mainClass>
+                        </manifest>
+                    </archive>
+                </configuration>
+            </plugin>
         </plugins>
     </build>
 
@@ -30,12 +65,14 @@
         </dependency>
 
         <dependency>
-            <groupId>org.bouncycastle</groupId>
-            <artifactId>bc-fips</artifactId>
-            <version>1.0</version>
-            <scope>system</scope>
-            <systemPath>${project.basedir}/src/main/resources/bc-fips-1.0.0.jar</systemPath>
+            <groupId>org.bouncycastle.jcajce.provider</groupId>
+            <artifactId>bouncycastle-fips</artifactId>
+            <version>1.0.0</version>
         </dependency>
-
+        <dependency>
+            <groupId>commons-io</groupId>
+            <artifactId>commons-io</artifactId>
+            <version>2.6</version>
+        </dependency>
     </dependencies>
 </project>
