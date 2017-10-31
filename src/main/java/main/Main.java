@@ -1,3 +1,5 @@
+package main;
+
 import exception.NoImplementedException;
 import socket.Client;
 import socket.ISocket;

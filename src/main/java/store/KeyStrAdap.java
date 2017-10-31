@@ -2,7 +2,6 @@ package store;
 
 import utils.Utils;
 
-import javax.crypto.SecretKey;
 import java.io.*;
 import java.net.URISyntaxException;
 import java.security.*;
@@ -28,7 +27,7 @@ public class KeyStrAdap {
             cert[0] = store.getCertificate("cert");
             store.setKeyEntry(alias, key, pass, cert);
             store.store(output, pass);
-        } catch (KeyStoreException | IOException | NoSuchAlgorithmException | CertificateException | NoSuchProviderException | URISyntaxException e) {
+        } catch (KeyStoreException | IOException | NoSuchAlgorithmException | CertificateException | NoSuchProviderException e) {
             e.printStackTrace();
         } finally {
             if (output != null) {
