@@ -1,11 +1,9 @@
 package store;
 
-import org.apache.commons.io.IOUtils;
 import utils.Utils;
 
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
+import javax.crypto.SecretKey;
+import java.io.*;
 import java.net.URISyntaxException;
 import java.security.*;
 import java.security.cert.Certificate;
@@ -21,19 +19,21 @@ public class KeyStrAdap {
     private static char[] pass = "1qaz2wsx".toCharArray();
 
     public static void storeKey(String fileName, String alias, Key key) throws IOException {
-        ByteArrayOutputStream output = new ByteArrayOutputStream();
+        FileOutputStream output = null;
         try {
-            InputStream storeFile = Utils.getStoreFile(fileName);
+            File storeFile = Utils.getStoreFile(fileName);
             KeyStore store = load(storeFile, pass);
-            IOUtils.copy(storeFile, output);
+            output = new FileOutputStream(storeFile);
             Certificate[] cert = new Certificate[1];
             cert[0] = store.getCertificate("cert");
             store.setKeyEntry(alias, key, pass, cert);
             store.store(output, pass);
-        } catch (KeyStoreException | IOException | NoSuchAlgorithmException | CertificateException | NoSuchProviderException | URISyntaxException e) {
+        } catch (KeyStoreException | IOException | NoSuchAlgorithmException | CertificateException | NoSuchProviderException e) {
             e.printStackTrace();
         } finally {
-            output.close();
+            if (output != null) {
+                output.close();
+            }
         }
 
     }
@@ -64,16 +64,16 @@ public class KeyStrAdap {
     private static Key getKey(String fileName, String alias)
             throws CertificateException, NoSuchAlgorithmException, KeyStoreException, NoSuchProviderException,
             IOException, UnrecoverableKeyException, URISyntaxException {
-        InputStream storeFile = Utils.getStoreFile(fileName);
+        File storeFile = Utils.getStoreFile(fileName);
         KeyStore store = load(storeFile, pass);
         return store.getKey(alias, pass);
     }
 
-    private static KeyStore load(InputStream storeFile, char[] pass)
+    private static KeyStore load(File storeFile, char[] pass)
             throws CertificateException, NoSuchAlgorithmException, IOException, NoSuchProviderException, KeyStoreException {
         KeyStore store = KeyStore.getInstance(KeyStore.getDefaultType());
-//        FileInputStream input = new FileInputStream(storeFile);
-        store.load(storeFile, pass);
+        FileInputStream input = new FileInputStream(storeFile);
+        store.load(input, pass);
         return store;
     }
 }

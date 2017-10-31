@@ -30,8 +30,7 @@
                             <goal>copy-dependencies</goal>
                         </goals>
                         <configuration>
-                            <!-- exclude junit, we need runtime dependency only -->
-                            <includeScope>compile</includeScope>
+                            <includeScope>runtime</includeScope>
                             <outputDirectory>${project.build.directory}/dependency-jars/</outputDirectory>
                         </configuration>
                     </execution>
@@ -45,9 +44,7 @@
                         <manifest>
                             <addClasspath>true</addClasspath>
                             <classpathPrefix>${project.build.directory}/dependency-jars/</classpathPrefix>
-                            <mainClass>
-                                Main
-                            </mainClass>
+                            <mainClass>main.Main</mainClass>
                         </manifest>
                     </archive>
                 </configuration>
@@ -68,11 +65,8 @@
             <groupId>org.bouncycastle.jcajce.provider</groupId>
             <artifactId>bouncycastle-fips</artifactId>
             <version>1.0.0</version>
-        </dependency>
-        <dependency>
-            <groupId>commons-io</groupId>
-            <artifactId>commons-io</artifactId>
-            <version>2.6</version>
+            <scope>system</scope>
+            <systemPath>${project.basedir}/lib/bc-fips-1.0.0.jar</systemPath>
         </dependency>
     </dependencies>
 </project>

@@ -1,9 +1,10 @@
 package utils;
 
 import java.io.File;
-import java.io.InputStream;
-import java.net.URISyntaxException;
+import java.io.IOException;
 import java.util.Arrays;
+
+import static java.io.File.separator;
 
 public class Utils {
 
@@ -27,16 +28,10 @@ public class Utils {
         return new String(data);
     }
 
-    public static InputStream getStoreFile(String fileName) throws URISyntaxException {
-        String dir = "/storeFiles";
-//        ClassLoader classLoader = Utils.class.getClassLoader();
-//        URL resource = classLoader.getResource(dir + "/" + fileName);
-//        assert resource != null;
 
-        return Utils.class.getResourceAsStream(dir + File.separator + fileName);
-
-//        String file = resource.getFile();
-//        file = file.replaceAll("%20", " ");
-//        return new File(file);
+    public static File getStoreFile(String fileName) throws IOException {
+        String dir = "storeFiles";
+        String workiingDir = System.getProperty("user.dir");
+        return new File(workiingDir + separator + dir + separator + fileName);
     }
 }
